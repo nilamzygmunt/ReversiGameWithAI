@@ -1,20 +1,20 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class HumanPlayer implements Player
 {
+    private int playerId;
+    public HumanPlayer(int playerId)
+    {
+        this.playerId = playerId;
+    }
     public int getPlayerId() {
         return playerId;
     }
 
-    public void setPlayerId(int playerId) {
-        this.playerId = playerId;
-    }
+    @Override
+    public void getMoves(ArrayList<Position> moves) {
 
-    private int playerId;
-
-    public HumanPlayer(int playerId)
-    {
-        this.playerId = playerId;
     }
     @Override
     public Position putDisk() {
@@ -22,6 +22,6 @@ public class HumanPlayer implements Player
         System.out.println("Enter your move:");
         int posX = input.nextInt();
         int posY = input.nextInt();
-        return new Position(posX-1, posY-1);
+        return Position.getPosition(posX, posY);
     }
 }

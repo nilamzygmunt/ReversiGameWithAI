@@ -1,12 +1,28 @@
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 
 public class Board {
-
 
     private Integer[][] board;
     private int height;
     private int width;
     private boolean isPlayer1Turn;
+
+    public int getPlayer1DisksNumber() {
+        return player1DisksNumber;
+    }
+
+    private int player1DisksNumber;
+    private int player2DisksNumber;
+    ArrayList<Boolean> moveCanCapture;
+
+    ArrayList<Position> moves = new ArrayList<>();
+
+
+
+    private HashMap<ArrayList<Position>, Position> flips = new HashMap<ArrayList<Position>, Position>();
+
 
     public Board(int height, int width) {
         this.height = height;
@@ -15,21 +31,24 @@ public class Board {
     }
 
     private Board(Board source) {
-        System.arraycopy(source.board, 0, this.board, 0, source.height);
+        board = new Integer[source.height][source.width];
+        for (int i = 0; i < source.height; i++) {
+            for (int j = 0; j < source.width; j++) {
+                this.board[i][j] = source.board[i][j];
+            }
+        }
         this.height = source.height;
         this.width = source.width;
         this.isPlayer1Turn = source.isPlayer1Turn;
-    }
-
-    public Board clone() {
-      return new Board(this);
+        this.moves = (ArrayList<Position>) source.moves.clone();
+        this.flips = (HashMap<ArrayList<Position>, Position>) source.flips.clone();
     }
 
     public void initializeBoard()
     {
         for(int i = 0; i<height; i++)
         {
-            for(int j= 0; j<height; j++)
+            for(int j= 0; j<width; j++)
             {
                 board[i][j] = 0;
             }
@@ -38,40 +57,114 @@ public class Board {
         board[height/2][width/2] = 1;
         board[(height-1)/2][width/2] = 2;
         board[height/2][(width-1)/2] = 2;
+        player1DisksNumber = 2;
+        player2DisksNumber = 2;
+    }
+    void initBoardTest()
+    {
+        board[0][0] = 0;
+        board[0][1] = 2;
+        board[0][2] = 2;
+        board[0][3] = 2;
+        board[1][1] = 2;
+        board[1][2] = 2;
+        board[1][3] = 2;
+        board[2][1] = 2;
+        board[2][2] = 2;
+        board[2][3] = 2;
+        board[1][0] = 1;
+        board[2][0] = 1;
+        board[3][0] = 1;
+        board[3][1] = 1;
+        board[3][2] = 1;
+        board[3][3] = 1;
     }
 
+    public ArrayList<Position> getAvailableMoves()
+    {
+        moves.clear();
+        for(int i =0; i <height; i++)
+        {
+            for(int j = 0; j< width; j++)
+            {
+                if(board[i][j] == 0 && isLegalMove(Position.getPosition(i, j)))
+                {
+                    moves.add(Position.getPosition(i, j));
+                }
+            }
+        }
+        return moves;
+    }
+
+    public boolean isLegalMove(Position move)
+    {
+        moveCanCapture = new ArrayList<>(Arrays.asList( canCapture(move,1,1),
+                canCapture(move,0,1),
+                canCapture(move,1,0),
+                canCapture(move,-1,-1),
+                canCapture(move,-1,0),
+                canCapture(move,0,-1),
+                canCapture(move,1,-1),
+                canCapture(move,-1,1)));
+        if(moveCanCapture.contains(true))
+            return true;
+        else return false;
+    }
+
+    public boolean canCapture(Position move, int directionX, int directionY)
+    {
+        int posX = move.getPosX();
+        int posY = move.getPosY();
+        ArrayList<Position> possibleFlip = new ArrayList<>();
+        posX += directionX;
+        posY += directionY;
+        if(isOutOfBoardRange(posX, posY) || board[posX][posY] != getOpponentColor()) {
+            return false;
+        }
+        possibleFlip.add(Position.getPosition(posX, posY));
+        while(board[posX][posY] != 0 )
+        {
+            if(board[posX][posY] == getPlayerColor()) {
+                flips.put(possibleFlip, move);
+                return true;
+            }
+
+            posX += directionX;
+            posY += directionY;
+            if(isOutOfBoardRange(posX, posY))
+                return false;
+            possibleFlip.add(Position.getPosition(posX, posY));
+
+        }
+        return false;
+    }
+
+    public boolean isOutOfBoardRange(int posX, int posY)
+    {
+        return posX<0 || posY < 0 || posX > width-1 || posY > height-1;
+    }
     public boolean setDisk(Position move)
     {
-        if(isLegalMove(move.getPosX(), move.getPosY())) {
+        if(moves.contains(move)) {
             board[move.getPosX()][move.getPosY()] = getPlayerColor();
+            changeDisksNumber(1, 0);
+            flipOpponentsDisks(move);
             return true;
         }
         return false;
     }
 
-    public boolean isLegalMove(int posX, int posY)
+    public void changeDisksNumber(int added, int flipped)
     {
-        if (posX<0 || posX > width || posY < 0 || posY > height) {
-            System.out.println("xxx");
-            return false;
+        if (!isPlayer1Turn) {
+            player2DisksNumber += added;
+            player1DisksNumber -= flipped;
         }
-        if(board[posX][posY] != 0) {
-            return false;
+        else
+        {
+            player1DisksNumber += added;
+            player2DisksNumber -= flipped;
         }
-        if(canCapture(posX,posY,1,1) ||
-            canCapture(posX,posY,0,1) ||
-                canCapture(posX,posY,1,0) ||
-                canCapture(posX,posY,-1,-1) ||
-                canCapture(posX,posY,-1,0) ||
-                canCapture(posX,posY,0,-1) ||
-                canCapture(posX,posY,1,1))
-            return true;
-        else return false;
-
-        //and can capture
-        //possible captures.set(move, capture)
-        //if capture.size ==0 then no valid moves
-        //if move +1 +1 has opponent then see if it can caputure it by applying move +1+1 until it finds one or goes beyond border or meets 0
 
     }
     public int getOpponentColor()
@@ -80,93 +173,57 @@ public class Board {
             return 2;
         else return 1;
     }
+
     public int getPlayerColor()
     {
         if(isPlayer1Turn)
             return 1;
         else return 2;
     }
-
-    public boolean canCapture(int posX, int posY, int directionX, int directionY)
-    {
-
-        System.out.println("d:"+directionX+directionY);
-        posX += directionX;
-        posY += directionY;
-        System.out.println("x: "+posX+"y: "+posY);
-        System.out.println("con1:" + (posX<0) +"cond2: "+ (posY<0)+ "cond3: "+(posX > width-1)+"cond 4: "+(posY > height-1));
-        getposinState(posX, posY);
-        if(posX<0 || posY < 0 || posX > width-1 || posY > height-1 ||
-                board[posX][posY] != getOpponentColor())
-            return false;
-        System.out.println("cond5: "+(board[posX][posY]));
-        if(posX == width || posY == height)
-            return false;
-//        posX += directionX;
-//        posY += directionY;
-        while(board[posX][posY] != 0 )
-        {
-
-            if(board[posX][posY] == getPlayerColor())
-                return true;
-            posX += directionX;
-            posY += directionY;
-            getposinState(posX, posY);
-            if(posX == width || posY == height)
-                return false;
-            System.out.println("x: "+posX+"y "+posY);
-        }
-        return false;
+    public boolean isPlayer1Turn() {
+        return isPlayer1Turn;
     }
-    public void getAvailableMoves()
+    public void flipOpponentsDisks(Position move)
     {
-        ArrayList<Position> moves = new ArrayList<>();
-        int playerDisks;
-        for(int i =0; i <height; i++)
+        int flipCount = 0;
+        for(ArrayList<Position> possibleFlips : flips.keySet())
         {
-            for(int j = 0; j< width; j++)
+            if(flips.get(possibleFlips) == move)
             {
-                if(isLegalMove(i, j))
+                System.out.println(move);
+                for (Position flip : possibleFlips)
                 {
-                    moves.add(new Position(i, j));
+                  if(board[flip.getPosX()][flip.getPosY()] != getPlayerColor()) {
+                      System.out.println(flip);
+                      board[flip.getPosX()][flip.getPosY()] = getPlayerColor();
+                      flipCount++;
+                  }
                 }
             }
         }
-        System.out.println(moves);
-        for(int i = 0; i <height; i++)
-        {
-            for(int j = 0; j<width; j++) {
-                if(checkIfIsInMoves(i, j, moves))
-                {
-                    System.out.print("\u001B[32m"+board[i][j]+"\u001B[0m");
-
-                }
-                else  System.out.print(board[i][j]);
-
-            }
-            System.out.println();
-        }
+        changeDisksNumber(flipCount, flipCount);
+        flips.clear();
     }
 
-    boolean checkIfIsInMoves(int i, int j, ArrayList<Position> moves)
-    {
-        for(Position move : moves)
-        {
-            if(move.getPosX() == i && move.getPosY() == j)
-                return true;
-        }
-        return false;
-    }
-
-    public void getState()
+    public void printState(int tabNum)
     {
         for(int i = 0; i <height; i++)
         {
+            for(int t = 0; t< tabNum ; t++)
+            {
+                System.out.print("\t");
+            }
             for(int j = 0; j<width; j++) {
-                System.out.print(board[i][j]);
+                if(board[i][j] == 1)
+                    System.out.print("\u001B[33m"+board[i][j]+"\u001B[0m");
+                else  if(board[i][j] ==2)
+                    System.out.print("\u001B[36m"+board[i][j]+"\u001B[0m");
+                else System.out.print(board[i][j]);
             }
             System.out.println();
-            }
+
+        }
+        System.out.println();
     }
 
     public void getposinState(int posX, int posY)
@@ -184,39 +241,22 @@ public class Board {
             }
             System.out.println();
         }
+        System.out.println();
     }
     public Integer[][] getBoard() {
         return board;
+    }
+    public HashMap<ArrayList<Position>, Position> getFlips() {
+        return flips;
     }
 
     public void setBoard(Integer[][] board) {
         this.board = board;
     }
 
-    public int getHeight() {
-        return height;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
-    public boolean isPlayer1Turn() {
-        return isPlayer1Turn;
-    }
-
     public void setPlayer1Turn(boolean player1Turn) {
         isPlayer1Turn = player1Turn;
     }
-
 
     public void printBoard()
     {
@@ -257,5 +297,9 @@ public class Board {
         if (player == 1)
             return "\u001B[33m"+"##"+"\u001B[0m";
         else return "\u001B[36m"+"<3"+"\u001B[0m";
+    }
+
+    public Board clone() {
+        return new Board(this);
     }
 }
