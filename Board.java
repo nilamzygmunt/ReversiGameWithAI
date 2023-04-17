@@ -14,14 +14,18 @@ public class Board {
     }
 
     private int player1DisksNumber;
+
+    public int getPlayer2DisksNumber() {
+        return player2DisksNumber;
+    }
+
     private int player2DisksNumber;
     ArrayList<Boolean> moveCanCapture;
 
     ArrayList<Position> moves = new ArrayList<>();
 
-
-
     private HashMap<ArrayList<Position>, Position> flips = new HashMap<ArrayList<Position>, Position>();
+    ArrayList<Board> children = new ArrayList<>();
 
 
     public Board(int height, int width) {
@@ -42,6 +46,8 @@ public class Board {
         this.isPlayer1Turn = source.isPlayer1Turn;
         this.moves = (ArrayList<Position>) source.moves.clone();
         this.flips = (HashMap<ArrayList<Position>, Position>) source.flips.clone();
+        this.player1DisksNumber = source.player1DisksNumber;
+        this.player2DisksNumber = source.player2DisksNumber;
     }
 
     public void initializeBoard()
@@ -190,11 +196,11 @@ public class Board {
         {
             if(flips.get(possibleFlips) == move)
             {
-                System.out.println(move);
+                //System.out.println(move);
                 for (Position flip : possibleFlips)
                 {
                   if(board[flip.getPosX()][flip.getPosY()] != getPlayerColor()) {
-                      System.out.println(flip);
+                      //System.out.println(flip);
                       board[flip.getPosX()][flip.getPosY()] = getPlayerColor();
                       flipCount++;
                   }

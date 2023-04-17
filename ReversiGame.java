@@ -28,20 +28,22 @@ public class ReversiGame {
     public void ReversiGameDraft() {
         board.initializeBoard();
         board.setPlayer1Turn(!board.isPlayer1Turn());
+        board.printBoard();
         ArrayList<Position> moves = board.getAvailableMoves();
         while (!gameFinished) {
             for (Player player : players) {
                 System.out.println("PLAYER: " + player.getPlayerId());
-                System.out.println(miniMax.minimax(board, 4, true));
+                System.out.println(miniMax.minimax(board, 3, true));
                 miniMax.print();
                 System.out.println("**************************************************");
-               // board.getStateWithTab(4);
+                board.printState(4);
+                System.out.println("Player 1: "+board.getPlayer1DisksNumber()+" Player 2: "+board.getPlayer2DisksNumber());
                 System.out.println("his moves: " + moves);
                 if (moves.size() > 0) {
                     player.getMoves(moves);
                     System.out.println(moves);
                     while (!board.setDisk(player.putDisk()))
-                        System.out.println("cant put here");
+                        System.out.println("can't put here");
                     board.printBoard();
                     System.out.println();
                 }
