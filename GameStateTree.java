@@ -1,30 +1,17 @@
 import java.util.ArrayList;
 
 public class GameStateTree {
-//    private class Node {
-//        Board board;
-//        ArrayList<Node> children;
-//        Node(Board board)
-//        {
-//            this.board = board;
-//            children = new ArrayList<>();
-//        }
-//
-//        public Board getBoard() {
-//            return board;
-//        }
-//        public ArrayList<Node> getChildren() {
-//            return children;
-//        }
-//    }
-    Board root;
-    public Board getRoot() {
-        return root;
+
+
+    GameState root;
+    public GameState getRoot() {
+         return root;
     }
-   // Node root;
-//    public Node getRoot() {
-//         return root;
-//    }
+
+    public void setRoot(GameState node)
+    {
+        root = node;
+    }
 //    Node getNode(Node curr, Board board)
 //    {
 //        System.out.println("OG");
@@ -43,41 +30,45 @@ public class GameStateTree {
 //        }
 //        return null;
 //    }
-//   void addChild(Board parent, Board child)
-//   {
-//
-//       if(parent == null) {
-//           System.out.println("NULL");
-//           root = new Node(child);
-//           return;
-//       }
-//       Node parentNode = getNode(root, parent);
-//
-//       if(parentNode != null)
-//       {
-//           System.out.println("FOUND PARENT");
-//           parentNode.getChildren().add(new Node(child));
-//       }
-//   }
-   void addChild(Board parent, Board child)
-    {
+   void addChild(GameState parent, GameState child)
+   {
 
-        if(parent == null) {
-            System.out.println("NULL");
-            root = child;
-            return;
+       if(parent == null) {
+           System.out.println("NULL");
+           setRoot(child);
+           return;
+       }
+
+       parent.getChildren().add(child);
+
+   }
+//   void addChild(Node parent, Node child)
+//    {
+//
+//        if(parent == null) {
+//            System.out.println("NULL");
+//            root = child;
+//            return;
+//        }
+//        parent.children.add(child);
+//        //Node parentNode = getNode(root, parent);
+//
+//    }
+    void printTree(GameState curr,int level)
+    {
+        for(int i = 0; i< level; i++) {
+            System.out.print("\t");
+
         }
-        parent.children.add(child);
-        //Node parentNode = getNode(root, parent);
+        System.out.print("score of board: "+curr.score+" ");
+        System.out.print("min: "+curr.minimizing);
+        System.out.println();
+        curr.getBoard().printState(level);
 
-    }
-    void printTree(Board curr,int level)
-    {
-        curr.printState(level);
         if(curr.children.size()!=0)
         {
             level++;
-            for(Board child : curr.children)
+            for(GameState child : curr.getChildren())
                 printTree(child, level);
         }
     }

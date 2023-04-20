@@ -33,7 +33,7 @@ public class ReversiGame {
         while (!gameFinished) {
             for (Player player : players) {
                 System.out.println("PLAYER: " + player.getPlayerId());
-                System.out.println(miniMax.minimax(board, 3, true));
+                System.out.println(miniMax.findBestMove(board));
                 miniMax.print();
                 System.out.println("**************************************************");
                 board.printState(4);
