@@ -1,4 +1,6 @@
 
+import Game.Board;
+import Game.Position;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -72,7 +74,7 @@ public class BoardTest {
     {
         boardFourxFour.getAvailableMoves();
         Board boardClone = boardFourxFour.clone();
-        assertFalse(boardClone.moves == boardFourxFour.moves);
+        assertFalse(boardClone.getMoves() == boardFourxFour.getMoves());
     }
 
     @Test
@@ -80,11 +82,11 @@ public class BoardTest {
     {
         boardFourxFour.getAvailableMoves();
         Board boardClone = boardFourxFour.clone();
-        for(Position move : boardFourxFour.moves)
+        for(Position move : boardFourxFour.getMoves())
         {
-            assertTrue(boardClone.moves.contains(move));
+            assertTrue(boardClone.getMoves().contains(move));
         }
-        assertTrue(boardClone.moves.size() == boardFourxFour.moves.size());
+        assertTrue(boardClone.getMoves().size() == boardFourxFour.getMoves().size());
     }
 
     @Test
@@ -112,7 +114,7 @@ public class BoardTest {
 //    void capturesDiagonally()
 //    {
 //        boardFourxFour.setPlayer1Turn(true);
-//        assertTrue(boardFourxFour.isLegalMove(new Position(2, 0)));
+//        assertTrue(boardFourxFour.isLegalMove(new Game.Position(2, 0)));
 //    }
 //
 //    @Test
@@ -121,6 +123,6 @@ public class BoardTest {
 //        boardFourxFour.getBoard()[2][2] = 2;
 //        boardFourxFour.getBoard()[2][3] = 1;
 //        boardFourxFour.setPlayer1Turn(true);
-//        assertTrue(boardFourxFour.isLegalMove(new Position(2, 0)));
+//        assertTrue(boardFourxFour.isLegalMove(new Game.Position(2, 0)));
 //    }
 }
