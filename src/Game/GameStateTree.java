@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+package Game;
 
 public class GameStateTree {
 
@@ -12,7 +12,7 @@ public class GameStateTree {
     {
         root = node;
     }
-//    Node getNode(Node curr, Board board)
+//    Node getNode(Node curr, Game.Board board)
 //    {
 //        System.out.println("OG");
 //        board.printState(0);
@@ -34,7 +34,6 @@ public class GameStateTree {
    {
 
        if(parent == null) {
-           System.out.println("NULL");
            setRoot(child);
            return;
        }
@@ -60,12 +59,10 @@ public class GameStateTree {
             System.out.print("\t");
 
         }
-        System.out.print("score of board: "+curr.score+" ");
-        System.out.print("min: "+curr.minimizing);
         System.out.println();
         curr.getBoard().printState(level);
 
-        if(curr.children.size()!=0)
+        if(curr.getChildren().size()!=0)
         {
             level++;
             for(GameState child : curr.getChildren())

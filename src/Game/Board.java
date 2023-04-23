@@ -1,3 +1,5 @@
+package Game;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -31,6 +33,7 @@ public class Board {
 
     private int player2DisksNumber;
     ArrayList<Boolean> moveCanCapture;
+
 
     ArrayList<Position> moves = new ArrayList<>();
 
@@ -233,6 +236,15 @@ public class Board {
     public void setBoard(Integer[][] board) {
         this.board = board;
     }
+    public boolean didThisPlayerWin(int player)
+    {
+        if(player == 1)
+            return player1DisksNumber > player2DisksNumber;
+        else return player2DisksNumber > player1DisksNumber;
+    }
+    public ArrayList<Position> getMoves() {
+        return moves;
+    }
 
     public void setPlayer1Turn(boolean player1Turn) {
         isPlayer1Turn = player1Turn;
@@ -279,6 +291,25 @@ public class Board {
         else return "\u001B[36m"+"<3"+"\u001B[0m";
     }
 
+    public boolean isGameFinished()
+    {
+        boolean originalTurn = isPlayer1Turn;
+        boolean gameFinished = false;
+        if(getAvailableMoves().isEmpty())
+        {
+            setPlayer1Turn(!isPlayer1Turn);
+            if(getAvailableMoves().isEmpty())
+            {
+                gameFinished = true;
+            }
+            else
+            {
+                gameFinished = false;
+            }
+        }
+        isPlayer1Turn = originalTurn;
+        return gameFinished;
+    }
     public Board clone() {
         return new Board(this);
     }

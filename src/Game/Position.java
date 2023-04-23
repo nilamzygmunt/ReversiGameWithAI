@@ -1,3 +1,5 @@
+package Game;
+
 public class Position {
     static Position[][] allPositions;
 
@@ -14,7 +16,7 @@ public class Position {
         else return new Position(posX, posY);
     }
 
-    static void initializeAllPositions(int height, int width)
+    public static void initializeAllPositions(int height, int width)
     {
         allPositions = new Position[width][height];
         for(int i =0; i < width; i++)
@@ -53,10 +55,10 @@ public class Position {
 //
 //        /* Check if o is an instance of Complex or not
 //          "null instanceof [type]" also returns false */
-//        if (!(o instanceof Position)) {
+//        if (!(o instanceof Game.Position)) {
 //            return false;
 //        }
-//        Position pos = (Position) o;
+//        Game.Position pos = (Game.Position) o;
 //        return this.posY == pos.getPosY() && this.posX == getPosX();
 //    }
 
