@@ -15,10 +15,11 @@ public class MiniMax {
 
     public MiniMax(int depth, int player) {
         this.MAX_DEPTH = depth;
+        this.player = player;
     }
 
     public int minimax(GameState node, int depth, boolean maximizingPlayer, Heuristic heuristic, int tabNum) {
-        if (depth == 0 || node.getBoard().getAvailableMoves().size() == 0)
+        if (depth == 0 || node.getBoard().isGameFinished())
         {
             int val = (int) heuristic.evaluate(node, player);
             evaluationCounter++;
@@ -31,13 +32,7 @@ public class MiniMax {
             int value= Integer.MIN_VALUE;
             for(GameState nodeChild : node.getChildren())
             {
-//                for(int i = 0; i <tabNum; i++)
-//                    System.out.print("\t");
-//                System.out.print("maximizing: "+ " "+value+"\n");
                 value = Math.max(value, minimax(nodeChild, depth-1, false, heuristic, tabNum+1));
-//                for(int i = 0; i <tabNum; i++)
-//                    System.out.print("\t");
-//                System.out.print("nr: "+" "+nodeChild.score+"\n");
             }
             return value;
         }
@@ -47,13 +42,7 @@ public class MiniMax {
 
             for(GameState nodeChild : node.getChildren())
             {
-//                for(int i = 0; i <tabNum; i++)
-//                    System.out.print("\t");
-//                System.out.print("minimizing: "+ " "+value+"\n");
                 value = Math.min(value, minimax(nodeChild, depth-1, true, heuristic , tabNum+1));
-//                for(int i = 0; i <tabNum; i++)
-//                    System.out.print("\t");
-//                System.out.print("nr: "+" "+nodeChild.score+"\n");
 
             }
             return value;
@@ -61,7 +50,7 @@ public class MiniMax {
     }
 
     public int minimaxAlphaBeta(GameState node, int depth, int alpha, int beta, boolean maximizingPlayer, Heuristic heuristic) {
-        if (depth == 0 || node.getBoard().getAvailableMoves().size() == 0)
+        if (depth == 0 || node.getBoard().isGameFinished() )
         {
             int val = (int) heuristic.evaluate(node, player);
             evaluationCounter++;
@@ -115,7 +104,7 @@ public class MiniMax {
             {
                 bestMove = child.getMoveFromPreviousState();
             }
-            if((child.score >= bestScore ))//&& !moveValid) || ((child.score > bestScore) || (child.score == bestScore && rand.nextBoolean())))
+            if((child.score >= bestScore && !moveValid) || ((child.score > bestScore) || (child.score == bestScore && rand.nextBoolean())))
             {
                 bestScore = child.score;
                 bestMove = child.getMoveFromPreviousState();

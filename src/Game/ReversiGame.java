@@ -32,14 +32,11 @@ public class ReversiGame {
         gameFinished = false;
         while (!gameFinished) {
             for (Player player : players) {
-                if(player.getPlayerId() == 2 && board.isPlayer1Turn())
-                    System.out.println("Should it be?");
                 player.setMoves(board);
                 if (!player.getMoves().isEmpty()) {
                     while (!board.setDisk(player.putDisk(board)))
                         System.out.println("can't put here");
-//                    board.printBoard();
-//                    System.out.println();
+                    System.out.println();
                 }
                 board.setPlayer1Turn(!board.isPlayer1Turn());
             }
@@ -48,6 +45,7 @@ public class ReversiGame {
             }
         }
         winner = board.getPlayer1DisksNumber() > board.getPlayer2DisksNumber() ? 1 : 2;
+        System.out.println("Player 1: "+board.getPlayer1DisksNumber()+ " Player 2: "+board.getPlayer2DisksNumber());
        // board.printBoard();
     }
 

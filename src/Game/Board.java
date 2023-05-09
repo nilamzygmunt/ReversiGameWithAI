@@ -17,30 +17,21 @@ public class Board {
     public int getWidth() {
         return width;
     }
-
     private int width;
     private boolean isPlayer1Turn;
-
     public int getPlayer1DisksNumber() {
         return player1DisksNumber;
     }
-
     private int player1DisksNumber;
-
     public int getPlayer2DisksNumber() {
         return player2DisksNumber;
     }
 
     private int player2DisksNumber;
     ArrayList<Boolean> moveCanCapture;
-
-
     ArrayList<Position> moves = new ArrayList<>();
-
     private HashMap<ArrayList<Position>, Position> flips = new HashMap<ArrayList<Position>, Position>();
     ArrayList<Board> children = new ArrayList<>();
-
-
     public Board(int height, int width) {
         this.height = height;
         this.width = width;
@@ -205,27 +196,6 @@ public class Board {
         flips.clear();
     }
 
-    public void printState(int tabNum)
-    {
-        for(int i = 0; i <height; i++)
-        {
-            for(int t = 0; t< tabNum ; t++)
-            {
-                System.out.print("\t");
-            }
-            for(int j = 0; j<width; j++) {
-                if(board[i][j] == 1)
-                    System.out.print("\u001B[33m"+board[i][j]+"\u001B[0m");
-                else  if(board[i][j] ==2)
-                    System.out.print("\u001B[36m"+board[i][j]+"\u001B[0m");
-                else System.out.print(board[i][j]);
-            }
-            System.out.println();
-
-        }
-        System.out.println();
-    }
-
     public Integer[][] getBoard() {
         return board;
     }
@@ -248,47 +218,6 @@ public class Board {
 
     public void setPlayer1Turn(boolean player1Turn) {
         isPlayer1Turn = player1Turn;
-    }
-
-    public void printBoard()
-    {
-        for(int i = 0; i <2*height; i++)
-        {
-            for(int j = 0; j<width; j++)
-            {
-                if(i%2==0) {
-                    System.out.print("+----");
-                    if (j == width-1)
-                        System.out.print("-");
-                }
-                else
-                {
-                    if(board[i-(i/2)-1][j] == 1)
-                        System.out.print("| "+printPlayerDisk(1)+" ");
-                    else  if(board[i-(i/2)-1][j] ==2)
-                        System.out.print("| "+printPlayerDisk(2)+" ");
-                    else System.out.print("|    ");
-                    if(j == width-1)
-                        System.out.print("|");
-                }
-            }
-            System.out.println();
-        }
-        for(int i = 0; i<width; i++)
-        {
-            System.out.print("+----");
-            if (i == width-1)
-                System.out.print("-");
-        }
-        System.out.println();
-
-    }
-
-    public String printPlayerDisk(int player)
-    {
-        if (player == 1)
-            return "\u001B[33m"+"##"+"\u001B[0m";
-        else return "\u001B[36m"+"<3"+"\u001B[0m";
     }
 
     public boolean isGameFinished()

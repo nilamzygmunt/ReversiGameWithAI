@@ -37,7 +37,6 @@ public class BoardTest {
         boardFourxFour.getBoard()[2][2] = 2;
         boardFourxFour.getBoard()[3][2] = 1;
         boardFourxFour.setPlayer1Turn(true);
-        boardFourxFour.printBoard();
         assertTrue(boardFourxFour.isLegalMove(Position.getPosition(0, 2)));
     }
 
@@ -60,12 +59,9 @@ public class BoardTest {
     @Test
     void countAfterCapture()
     {
-
-        boardFourxFour.printState(0);
         boardFourxFour.setPlayer1Turn(true);
         boardFourxFour.getAvailableMoves();
         boardFourxFour.setDisk(Position.getPosition(2, 0));
-        boardFourxFour.printState(0);
         assertEquals(4, boardFourxFour.getPlayer1DisksNumber());
     }
 
@@ -109,20 +105,5 @@ public class BoardTest {
             assertTrue(boardClone.getFlips().get(key) == boardFourxFour.getFlips().get(key));
         }
     }
-//NEED PROPER SET UP OF BOARD
-//    @Test
-//    void capturesDiagonally()
-//    {
-//        boardFourxFour.setPlayer1Turn(true);
-//        assertTrue(boardFourxFour.isLegalMove(new Game.Position(2, 0)));
-//    }
-//
-//    @Test
-//    void capturesMultipleDiagonally()
-//    {
-//        boardFourxFour.getBoard()[2][2] = 2;
-//        boardFourxFour.getBoard()[2][3] = 1;
-//        boardFourxFour.setPlayer1Turn(true);
-//        assertTrue(boardFourxFour.isLegalMove(new Game.Position(2, 0)));
-//    }
+
 }
